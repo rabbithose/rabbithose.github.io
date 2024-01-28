@@ -1,0 +1,66 @@
+nav{
+    background-color: rgb(255, 199, 199);
+}
+.navbar-brand{
+    color: white;
+}
+
+body {
+    font-family:  "ヒラギノ角ゴ ProN W3",メイリオ, Arial, sans-serif;
+}
+
+.write_mode{
+    text-align: right;
+}
+
+input{
+    float: left; 
+}
+
+.kadomaru {
+    -webkit-border-radius:15px;
+    -moz-border-radius:15px;
+    border-radius:15px;
+    }
+
+.relative{
+    width:100%;
+    height:auto;
+    position: relative;
+    }
+
+.num_result{
+    position: absolute;
+    top:10px;
+    left: 5%;
+    bottom: 80px;
+    color: red;
+    padding: 10px 0;
+    font-size:18px;
+    font-weight:bold;
+    float: left;
+}
+
+.letter{
+    position: absolute;
+    top:10px;
+    left: 85%;
+    bottom: 90px;
+    color: red;
+    padding: 10px 0;
+    font-size:18px;
+    font-weight:bold;
+    text-align: right;
+}
+
+#num_result{
+    font-size:40px;   
+}
+
+#letter{
+    font-size:40px;
+}
+
+.mode{
+    text-align: right;
+}
