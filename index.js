@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
 setInterval(main, 1000);
 
-let mode = "waiting";
+let mode = "文字を読み取っていない";
 let count = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 let pose_number_list = [];
 let letter = "";
@@ -150,12 +150,12 @@ function get_letter(pose_num) {
         if (count[i] == 3) {
 
             if (i == 17) {
-                if (mode == "waiting") {
+                if (mode == "文字を読み取っていない") {
                     pose_number_list = [];
                     mode = 1;
                     break
                 } else {
-                    if (pose_number_list.length!=0){
+                    if (pose_number_list.length != 0) {
                         mode = "send_list";
                     }
                     count[i] = 0;
@@ -184,43 +184,99 @@ function get_letter(pose_num) {
             }
         }
         if (mode == "send_list") {
-            mode = "waiting";
-            const tebata_letter_list = [["ア", 9, 3], ["イ", 3, 2], ["ウ", 6, 9], ["エ", 1, 16, 1], ["オ", 1, 2, 3],
-            ["カ", 8, 3], ["キ", 6, 2], ["ク", 11, 15], ["ケ", 7, 3], ["コ", 8, 1],
-            ["サ", 1, 12], ["シ", 5, 7], ["ス", 1, 2, 5], ["セ", 9, 7], ["ソ", 5, 3],
-            ["タ", 11, 15, 5], ["チ", 7, 16], ["ツ", 12, 3], ["テ", 6, 3], ["ト", 2, 5],
-            ["ナ", 1, 3], ["ニ", 6], ["ヌ", 9, 4], ["ネ", 9, 2, 1], ["ノ", 3],
-            ["ハ", 10], ["ヒ", 1, 7], ["フ", 9], ["ヘ", 4], ["ホ", 1, 2, 10],
-            ["マ", 9, 5], ["ミ", 6, 1], ["ム", 7, 5], ["メ", 3, 5], ["モ", 6, 7],
-            ["ヤ", 8, 4], ["ユ", 9, 1], ["ー", 2]["ヨ", 8, 6],
-            ["ラ", 5, 9], ["リ", 12], ["ル", 3, 7], ["レ", 7], ["ロ", 7, 8],
-            ["ワ", 2, 9], ["ヲ", 1, 9], ["ン", 5, 1], ["゛", 13], ["゜", 14]
-            ];
-            let add_result = ""
-            // if (pose_number_list.index(13) == pose_number_list.length - 1) {
-            //     add_result = "゛"
-            // } else if (pose_number_list.index(14) == pose_number_list.length - 1) {
-            //     add_result = "゜"
-            // }
-            for (let i = 0; i < tebata_letter_list.length; i++) {
-                let t = tebata_letter_list[i]
-                for (let j = 0; j < Math.min(pose_number_list.length, t.length - 1); j++) {
-                    if (pose_number_list[j] === t[j + 1]) {
-                        if (j == pose_number_list.length - 1 && t.length - 1 == pose_number_list.length) {
-                            let result_letter = t[0] + add_result;
-                            letters += result_letter;
-                            return result_letter;
-                        }
-                        continue;
-                    } else {
-                        break
-                    }
-                }
-            }
-            return "?"
+            mode = "文字を読み取っていない";
+            return tebata_to_letter()
         }
     }
     return letter
+}
+
+
+function tebata_to_letter() {
+    const tebata_to_letter_tbl = {
+        "9,3": "ア",
+        "3,2": "イ",
+        "6,9": "ウ",
+        "1,16,1": "エ",
+        "1,2,3": "オ",
+        "8,3": "カ",
+        "6,2": "キ",
+        "11,15": "ク",
+        "7,3": "ケ",
+        "8,1": "コ",
+        "1,12": "サ",
+        "5,7": "シ",
+        "1,2,5": "ス",
+        "9,7": "セ",
+        "5,3": "ソ",
+        "11,15,5": "タ",
+        "7,16": "チ",
+        "12,3": "ツ",
+        "6,3": "テ",
+        "2,5": "ト",
+        "1,3": "ナ",
+        "6": "ニ",
+        "9,4": "ヌ",
+        "9,2,1": "ネ",
+        "3": "ノ",
+        "10": "ハ",
+        "1,7": "ヒ",
+        "9": "フ",
+        "4": "ヘ",
+        "1,2,10": "ホ",
+        "9,5": "マ",
+        "6,1": "ミ",
+        "7,5": "ム",
+        "3,5": "メ",
+        "6,7": "モ",
+        "8,4": "ヤ",
+        "9,1": "ユ",
+        "2": "ー",
+        "8,6": "ヨ",
+        "5,9": "ラ",
+        "12": "リ",
+        "3,7": "ル",
+        "7": "レ",
+        "7,8": "ロ",
+        "2,9": "ワ",
+        "1,9": "ヲ",
+        "5,1": "ン",
+    };
+    const daku_before = "カキクケコサシスセソタチツテトハヒフヘホ";
+    const daku_after = "ガギグゲゴザジズゼゾダヂヅデドバビブベボ";
+    const handaku_before = "ハヒフヘホ";
+    const handaku_after = "パピプペポ";
+
+    let lastNumber = pose_number_list.at(-1); // 末尾の数字
+    let result = ""; // 変換結果
+
+    if (lastNumber != 13 && lastNumber != 14) {
+        post_key = pose_number_list.join(","); // リストを","で連結
+        result = tebata_to_letter_tbl[post_key];
+    } else {
+        // 末尾の数字のみ削除（13＝濁点、14=半濁点）
+        console.log(pose_number_list)
+        pose_number_list = pose_number_list.filter((c) => { return c != 13 && c != 14 });
+        console.log(pose_number_list)
+        post_key = pose_number_list.join(",");
+        result = tebata_to_letter_tbl[post_key];
+        console.log(post_key, result)
+        let before = lastNumber == 13 ? daku_before : handaku_before;
+        let after = lastNumber == 13 ? daku_after : handaku_after;
+        let p = before.indexOf(result);
+        if (p >= 0) {
+            result = after.charAt(p);
+        }
+        pose_number_list.push(lastNumber);
+    }
+
+
+    if (result != "" && result != undefined) {
+        letters += result;
+        return result;
+    } else {
+        return "?";
+    }
 }
 
 
@@ -231,6 +287,7 @@ function get_data_of_tebata(data) {
     }
 
     if (data.score < 0.2) {
+        document.getElementById("num_result").textContent = "none_person";
         return;
     }
     let pose_num = get_pose_number(data);
@@ -239,11 +296,24 @@ function get_data_of_tebata(data) {
 }
 
 function write_letter() {
-    document.getElementById("in_tebata").textContent = pose_number_list;
+    // document.getElementById("in_tebata").textContent = pose_number_list;
+    for (let i = 0; i < 4; i++) {
+        id = "number" + i;
+        if (i < pose_number_list.length) {
+            document.getElementById(id).textContent = pose_number_list[i];
+        } else {
+            document.getElementById(id).textContent = "";
+        }
+    }
+
     document.getElementById("mode").textContent = mode;
     document.getElementById("letter").textContent = letter;
     document.getElementById("letters").textContent = letters;
 }
 function clearletter() {
     letters = ""
+}
+
+function delete_number() {
+    // pose_number_listの最後の文字を消してモードを一つ下げる
 }
