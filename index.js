@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
 setInterval(main, 1000);
 
-let mode = "文字を読み取っていない";
+let mode = "wait";
 let count = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 let pose_number_list = [];
 let letter = "";
@@ -45,8 +45,8 @@ async function main() {
         const video = document.getElementById("camera");
         const poses = await detector.estimatePoses(video);
 
-        get_data_of_tebata(poses[0]);
-        write_letter();
+        let pose_num = get_data_of_tebata(poses[0]);
+        write_letter(pose_num);
     } else {
         console.log(modeai);
     }
@@ -55,25 +55,16 @@ async function main() {
 function get_pose_number(data) {
     const left_shoulder = data.keypoints[5];
     const right_shoulder = data.keypoints[6];
+    const left_elbow = data.keypoints[7];
+    const right_elbow = data.keypoints[8];
     const left_wrist = data.keypoints[9];
     const right_wrist = data.keypoints[10];
 
-    const l_angle =
-        ((Math.atan2(
-            left_wrist["y"] - left_shoulder["y"],
-            left_wrist["x"] - left_shoulder["x"]
-        ) *
-            180) /
-            Math.PI) *
-        -1;
-    const r_angle =
-        ((Math.atan2(
-            right_wrist["y"] - right_shoulder["y"],
-            right_wrist["x"] - right_shoulder["x"]
-        ) *
-            180) /
-            Math.PI) *
-        -1;
+    const l_angle = arctan(left_wrist,left_shoulder);
+    const r_angle = arctan(right_wrist,right_shoulder);
+    const l_upper_angle = arctan(left_wrist,left_elbow);
+    const r_upper_angle = arctan(right_wrist,right_elbow);
+    const l_under_angle = arctan(left_elbow,left_shoulder);
 
     const numbers = [
         [90, -90],
@@ -102,12 +93,13 @@ function get_pose_number(data) {
     ];
 
     let result = 0;
+    let parameter = 20;
     for (let i = 0; i < numbers.length; i++) {
         let x = 1;
         result = 0;
         let l = numbers[i][0];
         let r = numbers[i][1];
-        let parameter = 20;
+        
         if (i == 5 || i == 6 || i == 17 || i == 19 || i == 20) {
             x = 2;
         }
@@ -118,7 +110,7 @@ function get_pose_number(data) {
                 result = 16;
             } else if (i == 15) {
                 result = 1;
-            } else if (i == 16 && i == 19 && i == 20) {
+            } else if (i == 16 || i == 19 || i == 20) {
                 result = 6;
             } else if (i == 17) {
                 result = 8;
@@ -134,7 +126,18 @@ function get_pose_number(data) {
             return result;
         }
     }
+    if(Math.abs(180-r_angle) < parameter*1.5 && Math.abs(180-l_upper_angle) <parameter*1.5 && Math.abs(90-l_under_angle) <parameter*1.5){
+        return 6;
+    }else if( Math.abs(45-r_upper_angle) && Math.abs(135-l_upper_angle) && Math.abs(l_under_angle)){
+        if(Math.abs(180-l_under_angle) < parameter || Math.abs(-180-l_under_angle) < parameter){
+            return 5
+        }
+    }
     return result;
+}
+
+function arctan(l1,l2){
+    return ((Math.atan2(l1["y"]-l2["y"],l1["x"]-l2["x"]) *180) /Math.PI)*-1;
 }
 
 function get_letter(pose_num) {
@@ -150,13 +153,15 @@ function get_letter(pose_num) {
         if (count[i] == 3) {
 
             if (i == 17) {
-                if (mode == "文字を読み取っていない") {
+                if (mode == "wait") {
                     pose_number_list = [];
                     mode = 1;
                     break
                 } else {
                     if (pose_number_list.length != 0) {
                         mode = "send_list";
+                    }else{
+                        break
                     }
                     count[i] = 0;
                 }
@@ -184,7 +189,7 @@ function get_letter(pose_num) {
             }
         }
         if (mode == "send_list") {
-            mode = "文字を読み取っていない";
+            mode = "wait";
             return tebata_to_letter()
         }
     }
@@ -281,35 +286,50 @@ function tebata_to_letter() {
 
 
 function get_data_of_tebata(data) {
-    console.log(data);
-    if (data === undefined) {
-        return;
+    if (data === undefined || data.score < 0.2) {
+        return "none_person";
     }
 
-    if (data.score < 0.2) {
-        document.getElementById("num_result").textContent = "none_person";
-        return;
-    }
     let pose_num = get_pose_number(data);
-    document.getElementById("num_result").textContent = pose_num;
     letter = get_letter(pose_num);
+    return pose_num;
 }
 
-function write_letter() {
+function write_letter(pose_num) {
     // document.getElementById("in_tebata").textContent = pose_number_list;
     for (let i = 0; i < 4; i++) {
         id = "number" + i;
         if (i < pose_number_list.length) {
-            document.getElementById(id).textContent = pose_number_list[i];
+            document.getElementById(id).textContent = pose_num_to_word(pose_number_list[i]);
         } else {
             document.getElementById(id).textContent = "";
         }
     }
-
-    document.getElementById("mode").textContent = mode;
+    let mode_word = mode;
+    if (mode=="wait"){
+        mode_word = "気をつけでスタート";
+    }
+    document.getElementById("mode").textContent = mode_word;
     document.getElementById("letter").textContent = letter;
     document.getElementById("letters").textContent = letters;
+    document.getElementById("num_result").textContent = pose_num_to_word(pose_num);
 }
+
+function pose_num_to_word(pose_num){
+    let number_word = pose_num
+    if (pose_num == 17){
+        number_word = "気をつけ"
+    }else if(pose_num==16){
+        number_word = "逆2"
+    }else if(pose_num==11){
+        number_word = "11-1"
+    }else if(pose_num==15){
+        number_word = "11-2"
+    }
+    
+    return number_word
+}
+
 function clearletter() {
     letters = ""
 }
