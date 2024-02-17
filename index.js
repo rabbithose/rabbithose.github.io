@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
 setInterval(main, 1000);
 
-let mode = "wait";
+let mode = 0;
 let count = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 let pose_number_list = [];
 let letter = "";
@@ -60,11 +60,11 @@ function get_pose_number(data) {
     const left_wrist = data.keypoints[9];
     const right_wrist = data.keypoints[10];
 
-    const l_angle = arctan(left_wrist,left_shoulder);
-    const r_angle = arctan(right_wrist,right_shoulder);
-    const l_upper_angle = arctan(left_wrist,left_elbow);
-    const r_upper_angle = arctan(right_wrist,right_elbow);
-    const l_under_angle = arctan(left_elbow,left_shoulder);
+    const l_angle = arctan(left_wrist, left_shoulder);
+    const r_angle = arctan(right_wrist, right_shoulder);
+    const l_upper_angle = arctan(left_wrist, left_elbow);
+    const r_upper_angle = arctan(right_wrist, right_elbow);
+    const l_under_angle = arctan(left_elbow, left_shoulder);
 
     const numbers = [
         [90, -90],
@@ -99,7 +99,7 @@ function get_pose_number(data) {
         result = 0;
         let l = numbers[i][0];
         let r = numbers[i][1];
-        
+
         if (i == 5 || i == 6 || i == 17 || i == 19 || i == 20) {
             x = 2;
         }
@@ -126,18 +126,18 @@ function get_pose_number(data) {
             return result;
         }
     }
-    if(Math.abs(180-r_angle) < parameter*1.5 && Math.abs(180-l_upper_angle) <parameter*1.5 && Math.abs(90-l_under_angle) <parameter*1.5){
+    if (Math.abs(180 - r_angle) < parameter * 1.5 && Math.abs(180 - l_upper_angle) < parameter * 1.5 && Math.abs(90 - l_under_angle) < parameter * 1.5) {
         return 6;
-    }else if( Math.abs(45-r_upper_angle) && Math.abs(135-l_upper_angle) && Math.abs(l_under_angle)){
-        if(Math.abs(180-l_under_angle) < parameter || Math.abs(-180-l_under_angle) < parameter){
+    } else if (Math.abs(45 - r_upper_angle) && Math.abs(135 - l_upper_angle) && Math.abs(l_under_angle)) {
+        if (Math.abs(180 - l_under_angle) < parameter || Math.abs(-180 - l_under_angle) < parameter) {
             return 5
         }
     }
     return result;
 }
 
-function arctan(l1,l2){
-    return ((Math.atan2(l1["y"]-l2["y"],l1["x"]-l2["x"]) *180) /Math.PI)*-1;
+function arctan(l1, l2) {
+    return ((Math.atan2(l1["y"] - l2["y"], l1["x"] - l2["x"]) * 180) / Math.PI) * -1;
 }
 
 function get_letter(pose_num) {
@@ -153,18 +153,17 @@ function get_letter(pose_num) {
         if (count[i] == 3) {
 
             if (i == 17) {
-                if (mode == "wait") {
+                count[i] = 0;
+                if (mode == 0) {
                     pose_number_list = [];
                     mode = 1;
-                    break
                 } else {
                     if (pose_number_list.length != 0) {
-                        mode = "send_list";
-                    }else{
-                        break
-                    }
-                    count[i] = 0;
+                        mode = 0;
+                        return tebata_to_letter()
+                    } 
                 }
+                break
             }
 
             if (mode == 1 || mode == 2 || mode == 3) {
@@ -180,17 +179,15 @@ function get_letter(pose_num) {
                         mode += 1;
                     }
                 }
+                count[i] = 0
             }
             if (mode == 4) {
                 if (pose_num == 13 || pose_num == 14) {
                     pose_number_list.push(pose_num);
-                    mode = "send_list";
+                    mode = 0;
+                    return tebata_to_letter()
                 }
             }
-        }
-        if (mode == "send_list") {
-            mode = "wait";
-            return tebata_to_letter()
         }
     }
     return letter
@@ -297,36 +294,62 @@ function get_data_of_tebata(data) {
 
 function write_letter(pose_num) {
     // document.getElementById("in_tebata").textContent = pose_number_list;
+    let n = pose_num;
+    if (n == 17 || n == "none_person") { n = 0 };
     for (let i = 0; i < 4; i++) {
         id = "number" + i;
         if (i < pose_number_list.length) {
             document.getElementById(id).textContent = pose_num_to_word(pose_number_list[i]);
+            document.getElementById(id).classList = ["alert text-center display-3 alert-primary"];
+        } else if (i == pose_number_list.length && mode != 0) {
+            document.getElementById(id).textContent = pose_num_to_word(n)+"?";
         } else {
             document.getElementById(id).textContent = "";
         }
     }
     let mode_word = mode;
-    if (mode=="wait"){
+    if (mode == 0) {
         mode_word = "気をつけでスタート";
+    }else {
+        mode_word = mode+"つめの原画を確認中"
     }
     document.getElementById("mode").textContent = mode_word;
     document.getElementById("letter").textContent = letter;
     document.getElementById("letters").textContent = letters;
     document.getElementById("num_result").textContent = pose_num_to_word(pose_num);
+    change_color(n);
 }
 
-function pose_num_to_word(pose_num){
-    let number_word = pose_num
-    if (pose_num == 17){
-        number_word = "気をつけ"
-    }else if(pose_num==16){
-        number_word = "逆2"
-    }else if(pose_num==11){
-        number_word = "11-1"
-    }else if(pose_num==15){
-        number_word = "11-2"
+function change_color(n) {
+    const color_list = ["alert-secondary", "alert-info"];
+    if (mode == 0) {
+        for (let i = 0; i < 4; i++) {
+            document.getElementById("number" + i).classList = ["alert text-center display-3 " + color_list[0]];
+        }
+    } else {
+        let place_num = mode - 1;
+        let color_index = 0;
+        if (Math.max(...count) > 0 && Math.max(...count) < 4 && n != 0) {
+            color_index = 1;
+        }
+        document.getElementById("number" + place_num).classList = ["alert text-center display-3 " + color_list[color_index]];
     }
-    
+}
+
+function pose_num_to_word(pose_num) {
+    let number_word = pose_num
+    if (pose_num == 17) {
+        number_word = "気をつけ"
+    } else if (pose_num == 16) {
+        number_word = "逆2"
+    } else if (pose_num == 11) {
+        number_word = "11-1"
+    } else if (pose_num == 15) {
+        number_word = "11-2"
+    } else if (pose_num == 0) {
+        number_word = "?"
+    }
+
     return number_word
 }
 
@@ -337,3 +360,4 @@ function clearletter() {
 function delete_number() {
     // pose_number_listの最後の文字を消してモードを一つ下げる
 }
+
