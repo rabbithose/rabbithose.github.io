@@ -2,13 +2,14 @@ var detector;
 var modeai = "wait";
 
 var modecam = "stop"
+let camMode = "environment"
 
 const cameraInit = () => {
     const video = document.getElementById("camera");
 
     const cameraSetting = {
         audio: false,
-        video: { facingMode: "environment" }
+        video: { facingMode: camMode }
     }
 
     navigator.mediaDevices.getUserMedia(cameraSetting)
@@ -128,10 +129,8 @@ function get_pose_number(data) {
     }
     if (Math.abs(180 - r_angle) < parameter * 1.5 && Math.abs(180 - l_upper_angle) < parameter * 1.5 && Math.abs(90 - l_under_angle) < parameter * 1.5) {
         return 6;
-    } else if (Math.abs(45 - r_upper_angle) && Math.abs(135 - l_upper_angle) && Math.abs(l_under_angle)) {
-        if (Math.abs(180 - l_under_angle) < parameter || Math.abs(-180 - l_under_angle) < parameter) {
-            return 5
-        }
+    } else if (Math.abs(45 - r_upper_angle) < parameter && Math.abs(135 - l_upper_angle) < parameter) {
+        return 5;
     }
     return result;
 }
@@ -161,7 +160,7 @@ function get_letter(pose_num) {
                     if (pose_number_list.length != 0) {
                         mode = 0;
                         return tebata_to_letter()
-                    } 
+                    }
                 }
                 break
             }
@@ -302,7 +301,7 @@ function write_letter(pose_num) {
             document.getElementById(id).textContent = pose_num_to_word(pose_number_list[i]);
             document.getElementById(id).classList = ["alert text-center display-3 alert-primary"];
         } else if (i == pose_number_list.length && mode != 0) {
-            document.getElementById(id).textContent = pose_num_to_word(n)+"?";
+            document.getElementById(id).textContent = pose_num_to_word(n) + "?";
         } else {
             document.getElementById(id).textContent = "";
         }
@@ -310,8 +309,8 @@ function write_letter(pose_num) {
     let mode_word = mode;
     if (mode == 0) {
         mode_word = "気をつけでスタート";
-    }else {
-        mode_word = mode+"つめの原画を確認中"
+    } else {
+        mode_word = mode + "つめの原画を確認中"
     }
     document.getElementById("mode").textContent = mode_word;
     document.getElementById("letter").textContent = letter;
@@ -361,3 +360,12 @@ function delete_number() {
     // pose_number_listの最後の文字を消してモードを一つ下げる
 }
 
+function change_camera(){
+    if(camMode == "user"){
+        camMode = "environment";
+    }else{
+        camMode = "user";
+    }
+    cameraInit()
+    console.log(camMode)
+}
