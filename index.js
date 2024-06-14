@@ -3,7 +3,7 @@ var modeai = "wait";
 
 var modecam = "stop"
 let camMode = "environment"
-let mode = "now loading...";
+
 const cameraInit = () => {
     const video = document.getElementById("camera");
 
@@ -28,14 +28,12 @@ document.addEventListener("DOMContentLoaded", async function () {
         poseDetection.SupportedModels.MoveNet
     );
     modeai = "move";
-    document.getElementById("mode").textContent = mode;
-    mode = "0";
     console.log("setupOK");
 });
 
 setInterval(main, 1000);
 
-
+let mode = 0;
 let count = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 let pose_number_list = [];
 let letter = "";
