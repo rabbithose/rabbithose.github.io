@@ -28,6 +28,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         poseDetection.SupportedModels.MoveNet
     );
     modeai = "move";
+    document.getElementById("mode").textContent = "now loading...";
     console.log("setupOK");
 });
 
