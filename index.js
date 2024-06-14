@@ -28,8 +28,8 @@ document.addEventListener("DOMContentLoaded", async function () {
         poseDetection.SupportedModels.MoveNet
     );
     modeai = "move";
-    mode = "0";
     document.getElementById("mode").textContent = mode;
+    mode = "0";
     console.log("setupOK");
 });
 
