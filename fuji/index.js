@@ -150,13 +150,13 @@ let seikai
 let huseikai
 let bgm
 function preload() {
-    titleImages["ベーデン・パウエル級"] = loadImage("/img/bp_new_01.png")
-    titleImages["熟練ハイカー"] = loadImage("/img/yukiyama_tozan.png")
-    titleImages["安定した登り手"] = loadImage("/img/tozan_fuku_woman.png")
-    titleImages["がんばり屋ビギナー"] = loadImage("/img/animal_dance_rabbit.png")
-    BP_img = loadImage("/img/bp_new_01.png");
-    taiko = loadSound("/sound/和太鼓でドドン.mp3")
-    seikai = loadSound("/sound/nc1281.wav")
+    titleImages["ベーデン・パウエル級"] = loadImage("./img/bp_new_01.png")
+    titleImages["熟練ハイカー"] = loadImage("./img/yukiyama_tozan.png")
+    titleImages["安定した登り手"] = loadImage("./img/tozan_fuku_woman.png")
+    titleImages["がんばり屋ビギナー"] = loadImage("./img/animal_dance_rabbit.png")
+    BP_img = loadImage("./img/bp_new_01.png");
+    taiko = loadSound("./sound/和太鼓でドドン.mp3")
+    seikai = loadSound("./sound/nc1281.wav")
     bgm = loadSound("./sound/System_Reserve.mp3")
     
 }
