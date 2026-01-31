@@ -1,93 +1,119 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ja">
-<head>
-  <meta charset="UTF-8">
-  <title>知識解説記事｜富士登山プロジェクト</title>
+  <head>
+    <meta charset="UTF-8" />
+    <title>知識解説記事｜富士登山プロジェクト</title>
 
-  <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
-    crossorigin="anonymous"
-  />
-</head>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+  </head>
 
-<body>
-  <div class="container mt-4">
+  <body>
+    <div class="container mt-4">
+      <div class="row border-bottom mb-4">
+        <h1>知識解説記事</h1>
+        <p class="text-muted">
+          登山初心者に必要な基礎知識・安全対策・トレーニング
+        </p>
+      </div>
 
-    <div class="row border-bottom mb-4">
-      <h1>知識解説記事</h1>
-      <p class="text-muted">
-        富士登山に必要な基礎知識・安全対策・トレーニング
-      </p>
-    </div>
-
-    <div class="row row-cols-1 row-cols-md-2 g-4">
-
-      <div class="col">
-        <div class="card h-100">
-          <div class="card-body">
-            <span class="badge bg-primary mb-2">装備</span>
-            <h5 class="card-title">富士登山に必要な装備</h5>
-            <p class="card-text">
-              初心者が最低限そろえるべき装備と、あると安心な持ち物を解説します。
-            </p>
+      <div class="row row-cols-1 row-cols-md-2 g-4">
+        <div class="col">
+          <div class="card h-100">
+            <div class="card-body">
+              <span class="badge bg-success mb-2">歩行技術</span>
+              <h5 class="card-title">安全な歩き方</h5>
+              <p class="card-text">
+                姿勢・歩幅・ペース管理など、基本の歩行技術。
+              </p>
+            </div>
+            <div class="card-footer bg-transparent">
+              <a href="./safe_walking.html" class="btn btn-outline-primary">
+                記事を読む →
+              </a>
+            </div>
           </div>
-          <div class="card-footer bg-transparent">
-            <a href="./equipment.html" class="btn btn-outline-primary">
-              記事を読む →
-            </a>
+        </div>
+
+        <div class="col">
+          <div class="card h-100">
+            <div class="card-body">
+              <span class="badge bg-primary mb-2">登り</span>
+              <h5 class="card-title">登り方</h5>
+              <p class="card-text">歩幅の取り方や服装調整など、登りのコツ。</p>
+            </div>
+            <div class="card-footer bg-transparent">
+              <a href="./climb.html" class="btn btn-outline-primary"
+                >記事を読む →</a
+              >
+            </div>
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="card h-100">
+            <div class="card-body">
+              <span class="badge bg-danger mb-2">下り</span>
+              <h5 class="card-title">下り方</h5>
+              <p class="card-text">
+                事故が起きやすい下山を安全に行うポイント。
+              </p>
+            </div>
+            <div class="card-footer bg-transparent">
+              <a href="./descent.html" class="btn btn-outline-primary"
+                >記事を読む →</a
+              >
+            </div>
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="card h-100">
+            <div class="card-body">
+              <span class="badge bg-warning text-dark mb-2">トレーニング</span>
+              <h5 class="card-title">トレーニング方法</h5>
+              <p class="card-text">登山のための基礎体力づくりと怪我予防。</p>
+            </div>
+            <div class="card-footer bg-transparent">
+              <a href="./training.html" class="btn btn-outline-primary"
+                >記事を読む →</a
+              >
+            </div>
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="card h-100">
+            <div class="card-body">
+              <span class="badge bg-secondary mb-2">装備</span>
+              <h5 class="card-title">装備の使い方</h5>
+              <p class="card-text">
+                ザックの背負い方とストックの使い方を解説。
+              </p>
+            </div>
+            <div class="card-footer bg-transparent">
+              <a href="./equipment_usage.html" class="btn btn-outline-primary"
+                >記事を読む →</a
+              >
+            </div>
           </div>
         </div>
       </div>
 
-      <div class="col">
-        <div class="card h-100">
-          <div class="card-body">
-            <span class="badge bg-success mb-2">安全</span>
-            <h5 class="card-title">高山病と安全対策</h5>
-            <p class="card-text">
-              高山病の原因、症状、予防方法と、登山中の判断基準をまとめました。
-            </p>
-          </div>
-          <div class="card-footer bg-transparent">
-            <a href="./safety.html" class="btn btn-outline-primary">
-              記事を読む →
-            </a>
-          </div>
+      <div class="row mt-5 text-center">
+        <div class="col">
+          <a href="../index.html" class="btn btn-secondary me-2">
+            ← 登山ホームへ
+          </a>
+          <a href="../app.html" class="btn btn-outline-primary">
+            登山アプリへ →
+          </a>
         </div>
       </div>
-
-      <div class="col">
-        <div class="card h-100">
-          <div class="card-body">
-            <span class="badge bg-warning text-dark mb-2">天候</span>
-            <h5 class="card-title">天候と服装の考え方</h5>
-            <p class="card-text">
-              富士山の天候変化と、それに対応する服装・レイヤリングの基本。
-            </p>
-          </div>
-          <div class="card-footer bg-transparent">
-            <a href="./weather.html" class="btn btn-outline-primary">
-              記事を読む →
-            </a>
-          </div>
-        </div>
-      </div>
-
     </div>
-
-    <div class="row mt-5 text-center">
-      <div class="col">
-        <a href="../index.html" class="btn btn-secondary me-2">
-          ← 登山ホームへ
-        </a>
-        <a href="../app.html" class="btn btn-outline-primary">
-          登山アプリへ →
-        </a>
-      </div>
-    </div>
-
-  </div>
-</body>
+  </body>
 </html>
