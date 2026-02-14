@@ -180,8 +180,7 @@ async function setup() {
     const videoElement = document.getElementById("camera1");
     HEIGHT = videoElement.videoHeight
     WIDTH = videoElement.videoWidth
-    let canvas = createCanvas(WIDTH, HEIGHT)
-    
+    let canvas = createCanvas(WIDTH/2, HEIGHT/2)
     canvas.parent(result)
     initChart();
 }
@@ -199,6 +198,7 @@ let all_shoulder_degs = []
 let all_hip_degs = []
 
 async function draw() {
+    scale(0.5)
     write_letter()
     background(0,255,255)
     stroke(0)
